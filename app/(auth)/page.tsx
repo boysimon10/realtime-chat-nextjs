@@ -1,4 +1,6 @@
 "use client";
+import Link from "next/link";
+import Image from 'next/image';
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -42,9 +44,10 @@ export default function Login() {
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+    <main className="bg-secondary flex min-h-screen flex-col items-center justify-between pt-44">
+       
       <Card>
-      <CardHeader>
+      <CardHeader> 
         <CardTitle>Login</CardTitle>
         <CardDescription>Connexion</CardDescription>
       </CardHeader>
@@ -94,6 +97,11 @@ export default function Login() {
         </form>
       </Form>
       </CardContent>
+      <CardFooter>
+          <Link href="/register" className="">
+            <p className="">S'inscrire ici</p>
+          </Link>
+      </CardFooter>
       </Card>
     </main>
   );
