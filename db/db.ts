@@ -1,21 +1,25 @@
+import path from 'path';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 
-dotenv.config();
 
-const uri = process.env.MONGO_URI;
+const envPath = path.resolve(__dirname, '../.env');
+dotenv.config({ path: envPath });
+
+const uri = process.env.MONGO_URI!;
 
 if (!uri) {
-  console.error('MongoDB URI not found in environment variables');
-  process.exit(1);
+  throw new Error('MongoDB URI not found in environment variables');
 }
 
 const options = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  serverSelectionTimeoutMS: 5000 
+  serverSelectionTimeoutMS: 5000
 };
 
-mongoose.connect(uri, options)
-  .then(() => console.log('Connected to MongoDB'))
-  .catch((err) => console.error('Error connecting to MongoDB:', err));
+export function connectToDB() {
+  return mongoose.connect(uri, options)
+    .then(() => console.log('Connected to MongoDB'))
+    .catch((err) => console.error('Error connecting to MongoDB:', err));
+}
