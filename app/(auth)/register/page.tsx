@@ -131,7 +131,7 @@ const handleSubmit = async (values: z.infer<typeof formSchema>) => {
                 }}
               />
               <Button type="submit" className="w-full">
-                Submit
+                Sign Up
               </Button>
             </form>
           </Form>

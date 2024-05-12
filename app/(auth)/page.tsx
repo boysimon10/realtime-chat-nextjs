@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import Image from 'next/image';
+import { useRouter } from "next/navigation"
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,21 +27,42 @@ import {
 
 const formSchema = z
   .object({
-    emailAddress: z.string().email(),
+    email: z.string().email(),
     password: z.string(),
   });
 
 export default function Login() {
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      emailAddress: "",
+      email: "",
       password: "",
     },
   });
 
-  const handleSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log({ values });
+  const handleSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      const response = await fetch("/api/auth/[...nextauth]", {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json",
+          },
+          body: JSON.stringify(values),
+      });
+
+      if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error);
+      }
+
+      // Si la requête est réussie, vous pouvez rediriger l'utilisateur ou effectuer d'autres actions
+      // Par exemple, rediriger vers une page de tableau de bord
+      router.push("/chats");
+  } catch (error) {
+      console.error("Login error:", error);
+      // Gérer l'erreur, par exemple afficher un message d'erreur à l'utilisateur
+  }
   };
 
   return (
@@ -59,7 +81,7 @@ export default function Login() {
         >
           <FormField
             control={form.control}
-            name="emailAddress"
+            name="email"
             render={({ field }) => {
               return (
                 <FormItem>
@@ -92,7 +114,7 @@ export default function Login() {
             }}
           />
           <Button type="submit" className="w-full">
-            Submit
+            Login
           </Button>
         </form>
       </Form>
