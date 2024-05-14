@@ -1,7 +1,9 @@
 "use client";
 import Link from "next/link";
-import Image from 'next/image';
 import { useRouter } from "next/navigation"
+import React, {useState} from "react"
+import { toast } from "react-hot-toast";
+import { Loader2 } from "lucide-react"
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -40,9 +42,11 @@ export default function Login() {
       password: "",
     },
   });
+  const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
+      setLoading(true)
       const response = await fetch("/api/auth/[...nextauth]", {
           method: "POST",
           headers: {
@@ -50,20 +54,21 @@ export default function Login() {
           },
           body: JSON.stringify(values),
       });
-
+  
       if (!response.ok) {
           const errorData = await response.json();
           throw new Error(errorData.error);
       }
-
-      // Si la requête est réussie, vous pouvez rediriger l'utilisateur ou effectuer d'autres actions
-      // Par exemple, rediriger vers une page de tableau de bord
+  
       router.push("/chats");
-  } catch (error) {
-      console.error("Login error:", error);
-      // Gérer l'erreur, par exemple afficher un message d'erreur à l'utilisateur
+    } catch (error: any) {
+        toast.error(error.message || "An error occurred while logging in");
+        console.error("Login error:", error);
+    }finally{
+      setLoading(false)
   }
   };
+  
 
   return (
     <main className="bg-secondary flex min-h-screen flex-col items-center justify-between pt-44">
@@ -114,7 +119,7 @@ export default function Login() {
             }}
           />
           <Button type="submit" className="w-full">
-            Login
+          {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Login"}
           </Button>
         </form>
       </Form>

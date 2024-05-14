@@ -2,7 +2,10 @@
 import Link from "next/link";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation"
+import { useRouter } from "next/navigation";
+import React, {useState} from "react";
+import { Loader2 } from "lucide-react";
+import { toast } from "react-hot-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
@@ -39,28 +42,36 @@ export default function Register() {
       password: "",
     },
   });
+  const [loading, setLoading] = useState(false)
 
 const handleSubmit = async (values: z.infer<typeof formSchema>) => {
   try {
+    setLoading(true)
     const response = await fetch('/api/auth/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(values),
     });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message);
-    }
-
+  
     const data = await response.json();
+  
+    if (!response.ok) {
+      if (response.status === 400 && data.error === 'User Already Exists') {
+        throw new Error('User Already Exists');
+      } else {
+        throw new Error(data.error || 'Something went wrong');
+      }
+    }
+  
+    toast.success("User created successfully!");
     console.log(data);
-    router.push("/")
-    // You can update the UI with the response data here
-  } catch (error) {
+    router.push("/");
+  } catch (error: any) {
+    toast.error(error.message);
     console.error(error);
-    // You can display an error message to the user here
-  }
+  }finally{
+    setLoading(false)
+  } 
 };
 
 
@@ -131,7 +142,7 @@ const handleSubmit = async (values: z.infer<typeof formSchema>) => {
                 }}
               />
               <Button type="submit" className="w-full">
-                Sign Up
+              {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Sign up"}
               </Button>
             </form>
           </Form>
