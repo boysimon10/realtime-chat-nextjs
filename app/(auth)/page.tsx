@@ -90,10 +90,10 @@ export default function Login() {
             render={({ field }) => {
               return (
                 <FormItem>
-                  <FormLabel>Email address</FormLabel>
+                  <FormLabel>Email</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Email address"
+                      placeholder="Email"
                       type="email"
                       {...field}
                     />
