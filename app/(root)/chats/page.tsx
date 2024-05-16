@@ -1,7 +1,13 @@
+
+import Chat from "../../../components/chats/Chat.tsx"
+//import { useRouter } from "next/navigation"
+//import React, {useState} from "react"
+
+
 export default function Chats() {
     return (
-      <main className="">
-          <h1 className="text-2xl text-fiord">Chats</h1>
+      <main className="bg-secondary h-screen pt-24">
+        <Chat/> 
       </main>
     );
   }
