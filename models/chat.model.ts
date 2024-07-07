@@ -1,11 +1,11 @@
 import mongoose, { Document, Model, Schema, Types } from "mongoose";
 
-interface IChat extends Document {
+export interface ChatDocument extends Document {
   members: Types.ObjectId[];
   messages: Types.ObjectId[];
-  isGroup: boolean;
+  //isGroup: boolean;
   name: string;
-  groupPhoto: string;
+  //groupPhoto: string;
   createdAt: Date;
   lastMessageAt: Date;
 }
@@ -19,18 +19,16 @@ const ChatSchema: Schema = new mongoose.Schema({
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Message' }],
     default: []
   },
-  isGroup: {
+  /*isGroup: {
     type: Boolean,
     default: false
   },
   name: {
     type: String,
-    default: ''
   },
   groupPhoto: {
     type: String,
-    default: ''
-  },
+  },*/
   createdAt: {
     type: Date,
     default: Date.now
@@ -41,6 +39,6 @@ const ChatSchema: Schema = new mongoose.Schema({
   }
 });
 
-const Chat: Model<IChat> = mongoose.models.Chat || mongoose.model<IChat>('Chat', ChatSchema);
+const Chat: Model<ChatDocument> = mongoose.models.Chat || mongoose.model<ChatDocument>('Chat', ChatSchema);
 
 export default Chat;
