@@ -50,7 +50,7 @@ export default function Navbar() {
           </Link>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <NavigationMenuLink className={navigationMenuTriggerStyle()} onClick={logout}>
+          <NavigationMenuLink className={`${navigationMenuTriggerStyle()} cursor-pointer`} onClick={logout}>
             Déconnexion
           </NavigationMenuLink>
         </NavigationMenuItem>
