@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import Chat, { ChatDocument } from "../../../models/chat.model";
-import User from "../../../models/user.model"; 
-import { connectToDB } from "../../../db/db";
+import Chat, { ChatDocument } from "@/models/chat.model";
+import User from "@/models/user.model"; 
+import { connectToDB } from "@/db/db";
 
 export const POST = async (req: NextRequest) => {
   try {

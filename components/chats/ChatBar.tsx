@@ -30,7 +30,7 @@ import {
   import { ScrollArea } from "@/components/ui/scroll-area"
 
 
-export default function BottomBar() {
+export default function ChatBar() {
     return (
         <>
             <CardHeader>

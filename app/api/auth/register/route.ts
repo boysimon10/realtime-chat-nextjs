@@ -1,5 +1,5 @@
-import User from "../../../../models/user.model";
-import { connectToDB } from "../../../../db/db";
+import User from "@/models/user.model";
+import { connectToDB } from "@/db/db";
 import { hash } from "bcryptjs";
 import { NextRequest, NextResponse } from 'next/server';
 
