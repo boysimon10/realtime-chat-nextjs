@@ -14,23 +14,69 @@ const defaultAvatarUrl = '/upload/pp/default.png';
 
 export default function NewChat() {
     const [users, setUsers] = useState<User[]>([]);
+    const [selectedUser, setSelectedUser] = useState<User | null>(null);
+    const [currentUser, setCurrentUser] = useState<User | null>(null);
 
     useEffect(() => {
-        async function fetchUsers() {
+        async function fetchData() {
             try {
-                const response = await fetch('/api/users');
-                if (!response.ok) {
-                    throw new Error('Failed to fetch users');
+                const [currentUserResponse, usersResponse] = await Promise.all([
+                    fetch('/api/users/me'),
+                    fetch('/api/users'),
+                ]);
+
+                if (!currentUserResponse.ok) {
+                    throw new Error('Échec du chargement de l\'utilisateur actuel');
                 }
-                const data: User[] = await response.json();
-                setUsers(data);
+                if (!usersResponse.ok) {
+                    throw new Error('Échec du chargement des utilisateurs');
+                }
+
+                const currentUserData: User = await currentUserResponse.json();
+                const usersData: User[] = await usersResponse.json();
+
+                setCurrentUser(currentUserData);
+                setUsers(usersData);
             } catch (error) {
-                console.error('Failed to fetch users:', error);
+                console.error('Échec du chargement des données :', error);
             }
         }
 
-        fetchUsers();
+        fetchData();
     }, []);
+
+    const handleUserSelect = (user: User) => {
+        setSelectedUser(user);
+    };
+
+    const handleCreateChat = async () => {
+        if (!selectedUser || !currentUser) return;
+
+        try {
+            const response = await fetch('/api/chats', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    members: [currentUser._id, selectedUser._id],
+                    messages: [],
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Échec de la création du chat');
+            }
+
+            const data = await response.json();
+            console.log('Chat créé avec succès :', data);
+            // Gérer la création réussie du chat (par exemple, naviguer vers le chat, afficher un message de succès, etc.)
+        } catch (error) {
+            console.error('Échec de la création du chat :', error);
+        }
+    };
+
+    const filteredUsers = users.filter(user => user._id !== currentUser?._id);
 
     return (
         <>
@@ -40,22 +86,25 @@ export default function NewChat() {
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[425px]">
                     <DialogHeader>
-                        <DialogTitle>New Chat</DialogTitle>
+                        <DialogTitle>Nouveau Chat</DialogTitle>
                         <DialogDescription>
-                            Start a new chat
+                            Commencer un nouveau chat
                         </DialogDescription>
                     </DialogHeader>
                     <Command>
                         <CommandInput placeholder="Chercher une personne" />
                         <CommandList>
-                            {users.length === 0 ? (
-                                <CommandEmpty>No results found.</CommandEmpty>
+                            {filteredUsers.length === 0 ? (
+                                <CommandEmpty>Aucun résultat trouvé.</CommandEmpty>
                             ) : (
                                 <CommandGroup heading="Chats">
-                                    {users.map(user => (
-                                        <CommandItem key={user._id}>
+                                    {filteredUsers.map(user => (
+                                        <CommandItem 
+                                            key={user._id}
+                                            onSelect={() => handleUserSelect(user)}
+                                        >
                                             <Avatar className="mr-2">
-                                                <AvatarImage src={defaultAvatarUrl} alt="Default Avatar" className="mr-2" />
+                                                <AvatarImage src={defaultAvatarUrl} alt="Avatar par défaut" className="mr-2" />
                                             </Avatar>
                                             <span>{user.username}</span>
                                         </CommandItem>
@@ -64,6 +113,11 @@ export default function NewChat() {
                             )}
                         </CommandList>
                     </Command>
+                    {selectedUser && (
+                        <div className="mt-4">
+                            <Button onClick={handleCreateChat}>Créer le Chat</Button>
+                        </div>
+                    )}
                 </DialogContent>
             </Dialog>
         </>

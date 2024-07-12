@@ -13,6 +13,13 @@ export const POST = async (req: NextRequest) => {
       return NextResponse.json({ error: "Exactly two members are required for a direct chat" }, { status: 400 });
     }
 
+    // Vérifier si un chat avec les mêmes membres existe déjà
+    const existingChat = await Chat.findOne({ members: { $all: members, $size: 2 } });
+
+    if (existingChat) {
+      return NextResponse.json({ error: "Chat already exists between these members", chat: existingChat }, { status: 400 });
+    }
+
     // Créer un nouveau chat
     const newChat: ChatDocument = new Chat({
       members,
