@@ -26,9 +26,27 @@ import {
     CommandShortcut,
   } from "@/components/ui/command";
   import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useEffect } from "react";
 
+  interface User {
+    _id: string;
+    username: string;
+}
+const defaultAvatarUrl = '/upload/pp/default.png';
 
 export default function ChatList() {
+    //const [users, setUsers] = useState<User[]>([]);
+    //const [currentUser, setCurrentUser] = useState<User | null>(null);
+    useEffect(()=> {
+        async function fetchUserChats(){
+            try {
+                
+            }catch{
+
+            }
+        }
+        fetchUserChats();
+    }, [])
     return (
         <>
                 <Card className="w-auto">

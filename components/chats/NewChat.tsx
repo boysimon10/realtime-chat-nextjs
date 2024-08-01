@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { MailPlus } from 'lucide-react';
+import { useRouter } from "next/navigation"
 
 interface User {
     _id: string;
@@ -14,8 +17,10 @@ const defaultAvatarUrl = '/upload/pp/default.png';
 
 export default function NewChat() {
     const [users, setUsers] = useState<User[]>([]);
-    const [selectedUser, setSelectedUser] = useState<User | null>(null);
+    const [selectedUser, setSelectedUser] = useState<string | undefined>(undefined);
     const [currentUser, setCurrentUser] = useState<User | null>(null);
+
+    const router = useRouter();
 
     useEffect(() => {
         async function fetchData() {
@@ -45,8 +50,8 @@ export default function NewChat() {
         fetchData();
     }, []);
 
-    const handleUserSelect = (user: User) => {
-        setSelectedUser(user);
+    const handleUserSelect = (userId: string) => {
+        setSelectedUser(userId);
     };
 
     const handleCreateChat = async () => {
@@ -59,7 +64,7 @@ export default function NewChat() {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    members: [currentUser._id, selectedUser._id],
+                    members: [currentUser._id, selectedUser],
                     messages: [],
                 }),
             });
@@ -69,6 +74,8 @@ export default function NewChat() {
             }
 
             const data = await response.json();
+            const chatId = data.chat._id;
+            router.push(`/chats/${chatId}`);
             console.log('Chat créé avec succès :', data);
             // Gérer la création réussie du chat (par exemple, naviguer vers le chat, afficher un message de succès, etc.)
         } catch (error) {
@@ -92,23 +99,28 @@ export default function NewChat() {
                         </DialogDescription>
                     </DialogHeader>
                     <Command>
-                        <CommandInput placeholder="Chercher une personne" />
+                        
                         <CommandList>
                             {filteredUsers.length === 0 ? (
                                 <CommandEmpty>Aucun résultat trouvé.</CommandEmpty>
                             ) : (
                                 <CommandGroup heading="Chats">
-                                    {filteredUsers.map(user => (
-                                        <CommandItem 
-                                            key={user._id}
-                                            onSelect={() => handleUserSelect(user)}
-                                        >
-                                            <Avatar className="mr-2">
-                                                <AvatarImage src={defaultAvatarUrl} alt="Avatar par défaut" className="mr-2" />
-                                            </Avatar>
-                                            <span>{user.username}</span>
-                                        </CommandItem>
-                                    ))}
+                                    <RadioGroup 
+                                        value={selectedUser} 
+                                        onValueChange={handleUserSelect}
+                                    >
+                                        {filteredUsers.map(user => (
+                                            <div className="flex items-center space-x-2" key={user._id}>
+                                                <RadioGroupItem value={user._id} id={user._id} />
+                                                <Label htmlFor={user._id} className='flex items-center'>
+                                                    <Avatar className="mr-2">
+                                                        <AvatarImage src={defaultAvatarUrl} alt="Avatar par défaut" className="mr-2" />
+                                                    </Avatar>
+                                                    {user.username}
+                                                </Label>
+                                            </div>
+                                        ))}
+                                    </RadioGroup>
                                 </CommandGroup>
                             )}
                         </CommandList>
