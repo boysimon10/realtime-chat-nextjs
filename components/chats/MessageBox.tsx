@@ -17,7 +17,7 @@ import {
   import { Label } from "@/components/ui/label";
 
 
-export default function Chat() {
+export default function MessageBox() {
     return (
         <>
                     <CardFooter>

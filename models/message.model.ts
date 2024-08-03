@@ -4,7 +4,7 @@ interface IMessage extends Document {
   chat: mongoose.Types.ObjectId;
   sender: mongoose.Types.ObjectId;
   text: string;
-  photo: string;
+  //photo: string;
   createdAt: Date;
   seenBy: mongoose.Types.ObjectId[];
 }
@@ -23,9 +23,9 @@ const MessageSchema: Schema = new mongoose.Schema({
   text: {
     type: String,
   },
-  photo: {
+  /*photo: {
     type: String,
-  },
+  },*/
   createdAt: {
     type: Date,
     default: Date.now,

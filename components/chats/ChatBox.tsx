@@ -5,24 +5,10 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Button } from "@/components/ui/button";
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
+import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle,
   } from "@/components/ui/card";
-  import {
-    Command,
-    CommandDialog,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList,
-    CommandSeparator,
-    CommandShortcut,
+  import { Command, CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, 
+    CommandSeparator, CommandShortcut,
   } from "@/components/ui/command";
   import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
   import { Textarea } from "@/components/ui/textarea";
@@ -42,7 +28,7 @@ export default function ChatBox() {
                     <Avatar className="mr-2">
                         <AvatarFallback>SD</AvatarFallback>
                     </Avatar>
-                        <div className="bg-gray-200 p-2 rounded-md">
+                        <div className="bg-[#2c2f3f] p-2 rounded-md">
                         <p>Salut</p>
                         </div>
                     </div>
@@ -60,7 +46,7 @@ export default function ChatBox() {
                     <Avatar className="mr-2">
                         <AvatarFallback>SD</AvatarFallback>
                     </Avatar>
-                        <div className="bg-gray-200 p-2 rounded-md">
+                        <div className="bg-[#2c2f3f] p-2 rounded-md">
                         <p>ça va et toi</p>
                         </div>
                     </div>
@@ -84,7 +70,7 @@ export default function ChatBox() {
                     </div>
                     {/* Message envoyé */}
                     <div className="flex justify-end">
-                      <div className="bg-[#1a1c23] text-white p-2 rounded-md">
+                      <div className="bg-blue-500 text-white p-2 rounded-md">
                         <p>rien igo de ton coté?</p>
                       </div>
                       <Avatar className="ml-2">

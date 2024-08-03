@@ -3,16 +3,18 @@ import Chat from '@/models/chat.model';
 import Message from '@/models/message.model';
 import User from '@/models/user.model';
 import { connectToDB } from '@/db/db';
+import { getDataFromToken } from '@/helpers/getDataFromToken';
 
 export const POST = async (req: NextRequest) => {
     try {
     await connectToDB();
 
     const body = await req.json();
+    const userId = await getDataFromToken(req);
 
-    const { chatId, currentUserId, text, photo } = body;
+    const { chatId, currentUserId, text } = body;
 
-    const currentUser = await User.findById(currentUserId);
+    const currentUser = await User.findOne({ _id: userId }).select("-password");
     if (!currentUser) {
         return new NextResponse('User not found', { status: 404 });
     }
@@ -21,8 +23,7 @@ export const POST = async (req: NextRequest) => {
         chat: chatId,
         sender: currentUser,
         text,
-        photo,
-        seenBy: [currentUserId],
+        seenBy: [currentUser],
     });
 
     const updatedChat = await Chat.findByIdAndUpdate(
@@ -43,7 +44,7 @@ export const POST = async (req: NextRequest) => {
         model: 'User',
       })
       .exec();
-
+      
     return new NextResponse(JSON.stringify(newMessage), { status: 200 });
   } catch (err) {
     console.error(err);

@@ -7,6 +7,7 @@ import MessageBox from './MessageBox'
 import {Card}  from "@/components/ui/card";
 
 
+
 export default function Chat() {
     return (
         <>
