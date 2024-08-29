@@ -10,6 +10,23 @@ import ChatList from '@/components/chats/ChatList';
 import MessageBox from '@/components/chats/MessageBox'
 
 export default function ChatId() {
+    
+    useEffect(()=>{
+        async function FetchChatId(){
+            try{
+                const response = await fetch('/api/chats/{}');
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log(data)
+                } else {
+                    console.error("Failed to fetch current Chats");
+                }
+            }catch{
+
+            }
+        }
+
+    }, []);
 
     return (
     <>
